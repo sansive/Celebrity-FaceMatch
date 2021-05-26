@@ -1,0 +1,10 @@
+#Ignorados de intelliJ
+/.idea
+*.iml
+
+#Ignorados de eclipse
+*.classpath
+*.project
+.settings
+lib
+
