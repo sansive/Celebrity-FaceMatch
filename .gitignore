@@ -11,3 +11,7 @@ lib
 #ignorados de java
 *.class
 
+#ignorados de Jade
+APDescription.txt
+MTPs-Main-Container.txt
+
