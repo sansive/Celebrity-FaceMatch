@@ -1,52 +1,42 @@
-package appInterface;
+package app.gui;
 
-import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
-import javax.swing.ImageIcon;
+import javax.swing.border.EmptyBorder;
 
-public class appInterface extends JFrame implements ActionListener {
+import app.agents.PerceptionAgent;
 
-	private JPanel contentPane;
-	private static appInterface frame;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
+public class JFrameApp extends JFrame implements ActionListener {
+    
+	public static final long serialVersionUID = 1L;
+    
+    private JPanel contentPane;
 	private JLabel imageUploaded;
 	private JButton UploadButton;
-	private Icon image;
+	private File file;
 	private JButton ConfirmButton;
 	private JButton ChangeButton;
-	private JLabel image_label;
+	private JLabel title;
+	private JLabel text;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					frame = new appInterface();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public appInterface() {
-		setTitle("Celebrity FaceMatch");
+    protected PerceptionAgent agent;
+    
+    public JFrameApp(String nombre, PerceptionAgent agent) {
+    	super();
+    	this.agent = agent;
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 755, 526);
 		contentPane = new JPanel();
@@ -56,42 +46,44 @@ public class appInterface extends JFrame implements ActionListener {
 
 		imageUploaded = new JLabel((String) null);
 		imageUploaded.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		imageUploaded.setBounds(59, 98, 245, 266);
+		imageUploaded.setBounds(59, 150, 245, 266);
 		contentPane.add(imageUploaded);
 
 		UploadButton = new JButton("Upload image");
 		UploadButton.addActionListener(this);
-		UploadButton.setBounds(59, 390, 245, 23);
+		UploadButton.setBounds(59, 427, 245, 23);
 		contentPane.add(UploadButton);
 		
 		ConfirmButton = new JButton("Confirm image");
 		ConfirmButton.addActionListener(this);
-		ConfirmButton.setBounds(183, 390, 121, 23);
+		ConfirmButton.setBounds(183, 427, 121, 23);
 		contentPane.add(ConfirmButton);
 		ConfirmButton.setVisible(false);
 		
 		ChangeButton = new JButton("Change image");
 		ChangeButton.addActionListener(this);
-		ChangeButton.setBounds(59, 390, 121, 23);
+		ChangeButton.setBounds(59, 427, 121, 23);
 		contentPane.add(ChangeButton);
 		
-		image_label = new JLabel("");
-		image_label.setBounds(425, 144, 207, 198);
-		contentPane.add(image_label);
-		ChangeButton.setVisible(false);
-	}
-
-	/**
-	 * Create event handler
-	 */
-	public void actionPerformed(ActionEvent e) {
+		title = new JLabel("Welcome to Celebrity FaceMatch!!");
+		title.setFont(new Font("Tahoma", Font.BOLD, 26));
+		title.setBounds(150, 25, 460, 62);
+		contentPane.add(title);
+		
+		text = new JLabel("Upload a photo of yourseft and find out which celebrity you look like");
+		text.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		text.setBounds(101, 84, 558, 30);
+		contentPane.add(text);
+    }
+    
+    public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == UploadButton || e.getSource() == ChangeButton) {
 			try {
 				// Comprobar extensiones
 				JFileChooser fileChooser = new JFileChooser();
-				int selection = fileChooser.showOpenDialog(frame);
+				int selection = fileChooser.showOpenDialog(this);
 				if (selection == JFileChooser.APPROVE_OPTION) {
-					image = fileChooser.getIcon(fileChooser.getSelectedFile());
+					file = fileChooser.getSelectedFile();
 					imageUploaded.setIcon(new ImageIcon(fileChooser.getSelectedFile().getAbsolutePath()));
 					
 					ImageIcon i = new ImageIcon(fileChooser.getSelectedFile().getAbsolutePath());
@@ -112,11 +104,13 @@ public class appInterface extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == ConfirmButton) {
-			/*ImageIcon i = new ImageIcon("images/gif_carga.gif");
-			Image img = i.getImage();
-			Image imgScaled = img.getScaledInstance(image_label.getWidth(), image_label.getHeight(), Image.SCALE_SMOOTH);
-            ImageIcon scaledIcon = new ImageIcon(imgScaled);
-            image_label.setIcon(scaledIcon);*/
+			try {
+				agent.sendMessage(file);
+				
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
+
 }
