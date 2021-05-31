@@ -1,13 +1,10 @@
-package agents.computo;
+package app.agents;
 
 import jade.core.*;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
-import jade.lang.acl.ACLMessage;
-
-import java.util.Iterator;
 
 public class AgenteComputo extends Agent {
 
