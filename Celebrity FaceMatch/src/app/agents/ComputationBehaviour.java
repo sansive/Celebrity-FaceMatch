@@ -5,20 +5,23 @@ import com.clarifai.credentials.ClarifaiCallCredentials;
 import com.clarifai.grpc.api.*;
 import com.clarifai.grpc.api.status.StatusCode;
 import com.google.protobuf.ByteString;
+
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
-import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class ClarifaiBehaviour extends Behaviour {
-    AgenteComputo agent;
-    public ClarifaiBehaviour(AgenteComputo a) {
+public class ComputationBehaviour extends Behaviour {
+
+	private static final long serialVersionUID = 1L;
+	ComputationAgent agent;
+	
+    public ComputationBehaviour(ComputationAgent a) {
         this.agent = a;
     }
 
@@ -27,8 +30,10 @@ public class ClarifaiBehaviour extends Behaviour {
 
         ACLMessage message = agent.blockingReceive();
         File imagen = null;
+        
         try {
             imagen = (File) message.getContentObject();
+            
         } catch (UnreadableException e) {
             e.printStackTrace();
         }
@@ -63,15 +68,8 @@ public class ClarifaiBehaviour extends Behaviour {
 
         Output output = response.getOutputs(0);
 
-        //Imprime en la consola los resultados
-        if(true){
-            for (Concept concept : output.getData().getConceptsList()) {
-                System.out.printf("%s %.2f%n", concept.getName(), concept.getValue());
-            }
-        }
-
         //Prepara el mensaje y lo envia
-        ACLMessage resultado = new ACLMessage(ACLMessage.INFORM);
+        ACLMessage resultado = new ACLMessage(ACLMessage.INFORM_REF);
         try {
             resultado.setContentObject(output);
         } catch (IOException e) {
@@ -92,21 +90,8 @@ public class ClarifaiBehaviour extends Behaviour {
     }
 
     private AID getAgentReceiver(){
-
-        DFAgentDescription dfd = new DFAgentDescription();
-        DFAgentDescription[]resultado = null;
-        try {
-            resultado = DFService.search(agent,dfd);
-        } catch (FIPAException e) {
-            e.printStackTrace();
-        }
-
-        assert resultado != null;
-        for (DFAgentDescription dfAgentDescription : resultado) {
-            if (dfAgentDescription.getName().getLocalName().equals("agenteComputo")) { //TODO Cambiar el nombre
-                return dfAgentDescription.getName();
-            }
-        }
-        return null;
+    	DFAgentDescription dfd = Utils.buscarAgente(agent, "percepcion");
+    	return dfd.getName();
     }
+    
 }

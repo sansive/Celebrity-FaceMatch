@@ -1,7 +1,5 @@
 package app.gui;
 
-import javax.swing.JFrame;
-
 import app.agents.PerceptionAgent;
 
 import java.awt.GraphicsEnvironment;
@@ -13,15 +11,15 @@ public class MainGui extends Thread {
 	
 	String title;
 	PerceptionAgent agent;
+	JFrameApp frame;
 
 	public MainGui(String title, PerceptionAgent agent) {
 		this.title = title;
 		this.agent = agent;
+		this.frame = new JFrameApp(title, agent);
 	}
 	
 	public void run() {
-        JFrame frame = new JFrameApp(title, agent);
-        
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd=ge.getDefaultScreenDevice();
         GraphicsConfiguration gc = gd.getDefaultConfiguration();
@@ -35,8 +33,8 @@ public class MainGui extends Thread {
         frame.setResizable(true);
 	}
 	
-	public void showResults() {
-		
+	public void showResults(String name1, String name2, String name3) {
+		frame.ShowResults(name1, name2, name3);
 	}
 
 }

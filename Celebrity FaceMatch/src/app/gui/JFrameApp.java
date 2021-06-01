@@ -6,8 +6,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.agents.PerceptionAgent;
 
@@ -30,6 +32,11 @@ public class JFrameApp extends JFrame implements ActionListener {
 	private JButton ChangeButton;
 	private JLabel title;
 	private JLabel text;
+	public JLabel calculando;
+	public JLabel resultado1;
+	public JLabel resultado2;
+	public JLabel resultado3;
+	public JLabel resultados;
 
     protected PerceptionAgent agent;
     
@@ -74,13 +81,56 @@ public class JFrameApp extends JFrame implements ActionListener {
 		text.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		text.setBounds(101, 84, 558, 30);
 		contentPane.add(text);
+		
+		calculando = new JLabel("");
+		calculando.setIcon(new ImageIcon("images/gif_carga.gif"));
+		calculando.setBounds(350, 175, 300, 200);
+		calculando.setFont(new Font("Tahoma", Font.BOLD, 15));
+		calculando.setVisible(false);
+		calculando.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(calculando);
+		
+		resultados = new JLabel("");
+		resultados.setBounds(350, 175, 300, 50);
+		resultados.setFont(new Font("Tahoma", Font.BOLD, 15));
+		resultados.setVisible(true);
+		resultados.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(resultados);
+		
+		resultado1 = new JLabel("");
+		resultado1.setBounds(350, 225, 300, 50);
+		resultado1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		resultado1.setVisible(true);
+		resultado1.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(resultado1);
+        
+		resultado2 = new JLabel("");
+		resultado2.setBounds(350, 275, 300, 50);
+		resultado2.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		resultado2.setVisible(true);
+		resultado2.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(resultado2);
+        
+		resultado3 = new JLabel("");
+		resultado3.setBounds(350, 325, 300, 50);
+		resultado3.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		resultado3.setVisible(true);
+		resultado3.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(resultado3);
     }
     
     public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == UploadButton || e.getSource() == ChangeButton) {
 			try {
-				// Comprobar extensiones
+				resultados.setVisible(false);
+				resultado1.setVisible(false);
+				resultado2.setVisible(false);
+				resultado3.setVisible(false);
+				
 				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpg", "gif", "png", "jpeg");
+				fileChooser.setFileFilter(filter);
+				
 				int selection = fileChooser.showOpenDialog(this);
 				if (selection == JFileChooser.APPROVE_OPTION) {
 					file = fileChooser.getSelectedFile();
@@ -104,6 +154,8 @@ public class JFrameApp extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == ConfirmButton) {
+			calculando.setVisible(true);
+			
 			try {
 				agent.sendMessage(file);
 				
@@ -112,5 +164,18 @@ public class JFrameApp extends JFrame implements ActionListener {
 			}
 		}
 	}
+    
+    public void ShowResults(String name1, String name2, String name3) {
+    	calculando.setVisible(false);
+		resultados.setVisible(true);
+		resultado1.setVisible(true);
+		resultado2.setVisible(true);
+		resultado3.setVisible(true);
+		
+    	resultados.setText("The celebrities you look like the most...");
+    	resultado1.setText("1.- " + name1);
+		resultado2.setText("2.- " + name2);
+		resultado3.setText("3.- " + name3);
+    }
 
 }
