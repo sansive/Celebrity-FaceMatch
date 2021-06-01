@@ -30,7 +30,7 @@ public class MainGui extends Thread {
         
         frame.setTitle(title);
         frame.setVisible(true);
-        frame.setResizable(true);
+        frame.setResizable(false);
 	}
 	
 	public void showResults(String name1, String name2, String name3) {
